@@ -1,37 +1,38 @@
-## Welcome to GitHub Pages
+## Welcome to Postman Project
 
-You can use the [editor on GitHub](https://github.com/geanv/Postman/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+PostMan is a distributed service to efficiently execute stateless operations.
+It identifies application-specific stateless operations, such as query parsing and data compression,
+as well as a generic stateless operation—processing
+network packets. These stateless operations can account for
+up to 90% of applications’ execution time and thus is worth
+offloading.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Introduction
 
-### Markdown
+Networking layer usually performs poorly when processing
+small packets, because there is a constant overhead associated
+with processing each packet. For example, when transferring
+packets using the TCP protocol, the IP header of each
+packet takes 20 bytes and the TCP header takes another 20
+bytes: these additional bytes not only consume bandwidth,
+but also incur CPU overhead. As a result, when transferring
+64-bytes packets on 10Gb ethernet (CPU: Intel Xeon CPU E5-2650 v3, NIC: Intel X520), Linux can only deliver a throughput of ~ 910 MB/s ( or ~ 890K requests/s).
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Postman can offload the packet processing
+to other nodes that have free cycles: these helper nodes can
+assemble small packets into big ones and send the big packet
+to the helper, so that the helpee can enjoy the benefits of processing
+large packets. Our idea is motivated by a key observation
+that, in today’s datacenters, a few nodes that are processing
+small packets are becoming scalability bottlenecks.
 
-```markdown
-Syntax highlighted code block
+### Postman Design
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/geanv/Postman/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+PostMan: the core of PostMan is a number
+of execution nodes that perform stateless operations for applications:
+application developers need to submit a piece of
+code (App logic) to execution nodes to describe how to perform
+stateless operations. Application client and server communicate
+with these execution nodes through given libraries,
+which guarantee that, despite failures, requests and replies
+are not lost, not duplicated, and not re-ordered.
